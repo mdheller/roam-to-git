@@ -74,7 +74,7 @@ def add_back_links(content: str, back_links: List[Tuple[str, Match]]) -> str:
     file_before = None
     for file, match in files:
         if file != file_before:
-            new_lines.append(f"## [{file}]({{{{ <\"{file}\"> }}}})")
+            new_lines.append(f"## [{file}]({{{{< relref \"{file}\" >}}}})")
         file_before = file
 
         start_context_ = list(takewhile(lambda c: c != "\n", match.string[:match.start()][::-1]))
