@@ -103,7 +103,8 @@ def format_link(string: str) -> str:
                     r"[\1]({{< relref \"\1\" >}})", string, flags=re.MULTILINE)
 
     # Format hashtags: #mytag
-    string = re.sub(r"#([a-zA-Z-_0-9]+)", r"[\1]({{< relref \"\1\" >}})", string, flags=re.MULTILINE)
+    # I've removed hashtags, because they often turn up in URLs
+    # string = re.sub(r"#([a-zA-Z-_0-9]+)", r"[\1]({{< relref \"\1\" >}})", string, flags=re.MULTILINE)
 
     # Format attributes
     string = re.sub(r"(^ *- )"  # Match the beginning, like '  - '
