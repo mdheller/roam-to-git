@@ -41,7 +41,7 @@ def format_markdown(contents: Dict[str, str]) -> Dict[str, str]:
         # Format content. Backlinks content will be formatted automatically.
         content = format_to_do(content)
         content = format_link(content)
-        content = "+++\ndraft = true\n+++\n\n" + content
+        content = f"+++\ndraft = true\ntitle = \"{file_name}\"\nauthor = [\"Knut Magnus Aasrud\"]\n+++\n\n" + content
         if len(content) > 0:
             out[file_name] = content
 
