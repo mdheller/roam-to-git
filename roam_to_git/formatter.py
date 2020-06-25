@@ -100,10 +100,10 @@ def format_link(string: str) -> str:
                     # TODO: manage a single ] in the tag
                     r"([^\]\n]+)"  # Everything except ]
                     r"\]\]",
-                    r"[\1](<\1.md>)", string, flags=re.MULTILINE)
+                    r"[\1]({{< relref \"\1\" >}})", string, flags=re.MULTILINE)
 
     # Format hashtags: #mytag
-    string = re.sub(r"#([a-zA-Z-_0-9]+)", r"[\1](<\1.md>)", string, flags=re.MULTILINE)
+    string = re.sub(r"#([a-zA-Z-_0-9]+)", r"[\1]({{< relref \"\1\" >}})", string, flags=re.MULTILINE)
 
     # Format attributes
     string = re.sub(r"(^ *- )"  # Match the beginning, like '  - '
@@ -112,3 +112,5 @@ def format_link(string: str) -> str:
                     r"\1**[\2](<\2.md>):**",  # Format Markdown link
                     string, flags=re.MULTILINE)
     return string
+
+# [Del operator]({{< relref "del-operator" >}})
