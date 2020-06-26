@@ -41,7 +41,7 @@ def format_markdown(contents: Dict[str, str]) -> Dict[str, str]:
         # Format content. Backlinks content will be formatted automatically.
         content = format_to_do(content)
         content = format_link(content)
-        content = f"+++\ndraft = false\ntitle = \"{file_name}\"\nauthor = [\"Knut Magnus Aasrud\"]\n+++\n\n" + content
+        content = f"+++\ndraft = false\ntitle = \"{file_name.replace(".md", "")}\"\nauthor = [\"Knut Magnus Aasrud\"]\n+++\n\n" + content
         if len(content) > 0:
             out[file_name] = content
 
@@ -74,7 +74,7 @@ def add_back_links(content: str, back_links: List[Tuple[str, Match]]) -> str:
     file_before = None
     for file, match in files:
         if file != file_before:
-            new_lines.append(f"## [{file}]({{{{< relref \"{file}\" >}}}})")
+            new_lines.append(f"### [{file}]({{{{< relref \"{file}\" >}}}})")
         file_before = file
 
         start_context_ = list(takewhile(lambda c: c != "\n", match.string[:match.start()][::-1]))
@@ -88,13 +88,20 @@ def add_back_links(content: str, back_links: List[Tuple[str, Match]]) -> str:
         context = (start_context + middle_context + end_context).strip()
         new_lines.extend([context, ""])
     backlinks_str = "\n".join(new_lines)
-    return f"{content}\n# Backlinks\n{backlinks_str}\n"
+    return f"{content}\n## Links to this file\n{backlinks_str}\n"
 
 
 def format_link(string: str) -> str:
     """Transform a RoamResearch-like link to a Markdown link."""
     # Regex are read-only and can't parse [[[[recursive]] [[links]]]], but they do the job.
     # We use a special syntax for links that can have SPACES in them
+    # Format aliased internal reference:
+    string = re.sub(r"\[(.*)\]" # Match the alias
+                    r"\(\[\[" # Opening [[
+                    r"([^\]\n]+)" # Everything inside the link
+                    r"\]\]", # Closing ]]
+                    r"[\1]({{< relref \"\2\" >}})", string, flags=re.MULTILINE)
+
     # Format internal reference: [[mynote]]
     string = re.sub(r"\[\["  # We start with [[
                     # TODO: manage a single ] in the tag
